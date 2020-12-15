@@ -19,6 +19,11 @@ class _DarkClockState extends State<DarkClock> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 300,
@@ -99,6 +104,7 @@ class ClockPainter extends CustomPainter {
     var secHandX = centerX + 80 * cos(dateTime.second * 6 * pi / 180);
     var secHandY = centerX + 80 * sin(dateTime.second * 6 * pi / 180);
     canvas.drawLine(center, Offset(secHandX, secHandY), secHandBrush);
+    // print('time : ${dateTime.hour} : ${dateTime.minute} : ${dateTime.second}');
 
     canvas.drawCircle(center, 16, dialCenterBrush);
 
