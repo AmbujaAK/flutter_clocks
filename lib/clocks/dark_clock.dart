@@ -14,14 +14,21 @@ class _DarkClockState extends State<DarkClock> {
     return Container(
       height: 300,
       width: 300,
-      child: CustomPaint(
-        painter: ClockPaint(),
+      child: Transform.rotate(
+        angle: -pi / 2,
+        child: CustomPaint(
+          painter: ClockPainter(),
+        ),
       ),
     );
   }
 }
 
-class ClockPaint extends CustomPainter {
+class ClockPainter extends CustomPainter {
+  var dateTime = DateTime.now();
+
+  // 1 sec == 6 degree
+
   @override
   void paint(Canvas canvas, Size size) {
     var centerX = size.width / 2;
@@ -65,16 +72,18 @@ class ClockPaint extends CustomPainter {
     canvas.drawCircle(center, radius - 40, dialBrush);
     canvas.drawCircle(center, radius - 40, dialPadBrush);
 
-    var hourHandX = centerX + 60 * cos(180 * pi / 180);
-    var hourHandY = centerX + 60 * sin(180 * pi / 180);
+    var hourHandX = centerX +
+        60 * cos((dateTime.hour * 30 + dateTime.minute * 0.5) * pi / 180);
+    var hourHandY = centerX +
+        60 * sin((dateTime.hour * 30 + dateTime.minute * 0.5) * pi / 180);
     canvas.drawLine(center, Offset(hourHandX, hourHandY), hourHandBrush);
 
-    var minHandX = centerX + 80 * cos(45 * pi / 180);
-    var minHandY = centerX + 80 * sin(45 * pi / 180);
+    var minHandX = centerX + 80 * cos(dateTime.minute * 6 * pi / 180);
+    var minHandY = centerX + 80 * sin(dateTime.minute * 6 * pi / 180);
     canvas.drawLine(center, Offset(minHandX, minHandY), minHandBrush);
 
-    var secHandX = centerX + 80 * cos(90 * pi / 180);
-    var secHandY = centerX + 80 * sin(90 * pi / 180);
+    var secHandX = centerX + 80 * cos(dateTime.second * 6 * pi / 180);
+    var secHandY = centerX + 80 * sin(dateTime.second * 6 * pi / 180);
     canvas.drawLine(center, Offset(secHandX, secHandY), secHandBrush);
 
     canvas.drawCircle(center, 16, dialCenterBrush);
