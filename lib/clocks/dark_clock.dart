@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,14 @@ class DarkClock extends StatefulWidget {
 }
 
 class _DarkClockState extends State<DarkClock> {
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,24 +60,29 @@ class ClockPainter extends CustomPainter {
       ..color = kSecHandColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 8;
+      ..strokeWidth = 4;
 
     var minHandBrush = Paint()
       ..shader = RadialGradient(colors: [kMinHandColor1, kMinHandColor2])
           .createShader(Rect.fromCircle(center: center, radius: radius))
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 12;
+      ..strokeWidth = 8;
 
     var hourHandBrush = Paint()
       ..shader = RadialGradient(colors: [kHourHandColor1, kHourHandColor2])
           .createShader(Rect.fromCircle(center: center, radius: radius))
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 16;
+      ..strokeWidth = 12;
+
+    var dashBrush = Paint()
+      ..color = kClockDialPadColor
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 1;
 
     // canvas
-
     canvas.drawCircle(center, radius - 40, dialBrush);
     canvas.drawCircle(center, radius - 40, dialPadBrush);
 
@@ -87,6 +101,19 @@ class ClockPainter extends CustomPainter {
     canvas.drawLine(center, Offset(secHandX, secHandY), secHandBrush);
 
     canvas.drawCircle(center, 16, dialCenterBrush);
+
+    var outterClockRadius = radius;
+    var innerClockRadius = radius - 14;
+
+    for (var i = 0; i < 360; i += 36) {
+      var x1 = centerX + outterClockRadius * cos(i * pi / 180);
+      var y1 = centerY + outterClockRadius * sin(i * pi / 180);
+
+      var x2 = centerX + innerClockRadius * cos(i * pi / 180);
+      var y2 = centerY + innerClockRadius * sin(i * pi / 180);
+
+      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), dashBrush);
+    }
   }
 
   @override
